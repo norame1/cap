@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -12,6 +13,8 @@ public class PyramidAgent : Agent
     private PyramidSwitch m_SwitchLogic;
     public GameObject areaSwitch;
     public bool useVectorObs;
+
+    public GameObject newAgent; // Reference to the new agent to be activated
 
     private Vector3 agentDefaultPosition;
     private Quaternion agentDefaultRotation;
@@ -29,6 +32,12 @@ public class PyramidAgent : Agent
         agentDefaultRotation = transform.rotation;
         switchDefaultPosition = areaSwitch.transform.position;
         switchDefaultRotation = areaSwitch.transform.rotation;
+
+        // Deactivate the new agent initially
+        if (newAgent != null)
+        {
+            newAgent.SetActive(false);
+        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -99,11 +108,31 @@ public class PyramidAgent : Agent
 
     void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("Collision detected with: " + collision.gameObject.name);
+
         if (collision.gameObject.CompareTag("switchOn"))
         {
+            Debug.Log("Collision with switchOn detected.");
             SetReward(2f);
             EndEpisode();
+
+            // Activate the new agent
+            if (newAgent != null)
+            {
+                newAgent.SetActive(true);
+                Debug.Log("New agent activated.");
+
+                // Schedule the destruction of the current agent and switch after a short delay
+                StartCoroutine(DestroyAfterDelay());
+            }
         }
+    }
+
+    private IEnumerator DestroyAfterDelay()
+    {
+        yield return new WaitForSeconds(0.1f);
+        Destroy(gameObject);
+        Destroy(areaSwitch);
     }
 
     public void OnSwitchActivated()
