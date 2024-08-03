@@ -28,6 +28,9 @@ public class CrossTheRoadAgent : Agent
     [SerializeField]
     private Material failureMaterial;
 
+    [SerializeField]
+    private GameObject agentPrefab; // Add a reference to the agent prefab
+
     private CrossTheRoadGoal goal = null;
 
     private float overallReward = 0;
@@ -128,8 +131,8 @@ public class CrossTheRoadAgent : Agent
 
         UpdateStats();
 
-        EndEpisode();
         StartCoroutine(SwapGroundMaterial(successMaterial, 0.5f));
+        InstantiateNewAgent();
     }
 
     public void TakeAwayPoints()
@@ -181,5 +184,14 @@ public class CrossTheRoadAgent : Agent
     {
         // Implement this method based on your requirements
         yield return new WaitForSeconds(duration);
+    }
+
+    private void InstantiateNewAgent()
+    {
+        // Instantiate a new agent at the current position
+        Instantiate(agentPrefab, transform.position, transform.rotation);
+
+        // Destroy the current agent
+        Destroy(gameObject);
     }
 }

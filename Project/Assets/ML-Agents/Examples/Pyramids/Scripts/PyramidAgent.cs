@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -14,7 +13,10 @@ public class PyramidAgent : Agent
     public GameObject areaSwitch;
     public bool useVectorObs;
 
-    public GameObject agentPrefab; // Reference to the agent prefab to instantiate
+    public GameObject existingDisabledPlayer; // Reference to the disabled player
+
+    private Vector3 newPlayerDefaultPosition;
+    private Quaternion newPlayerDefaultRotation;
 
     private Vector3 agentDefaultPosition;
     private Quaternion agentDefaultRotation;
@@ -32,6 +34,10 @@ public class PyramidAgent : Agent
         agentDefaultRotation = transform.rotation;
         switchDefaultPosition = areaSwitch.transform.position;
         switchDefaultRotation = areaSwitch.transform.rotation;
+
+        // Set default position and rotation for the new player
+        newPlayerDefaultPosition = existingDisabledPlayer.transform.position;
+        newPlayerDefaultRotation = existingDisabledPlayer.transform.rotation;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -97,42 +103,30 @@ public class PyramidAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        RespawnAgentAndSwitch();
+        // Only respawn if the switch and agent exist
+        if (areaSwitch != null && gameObject != null)
+        {
+            RespawnAgentAndSwitch();
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collision detected with: " + collision.gameObject.name);
-
         if (collision.gameObject.CompareTag("switchOn"))
         {
-            Debug.Log("Collision with switchOn detected.");
             SetReward(2f);
+            EnableExistingPlayer();
+            DestroyAgentAndSwitch();
             EndEpisode();
-
-            // Instantiate the new agent
-            if (agentPrefab != null)
-            {
-                Instantiate(agentPrefab, agentDefaultPosition, agentDefaultRotation);
-                Debug.Log("New agent instantiated.");
-
-                // Schedule the destruction of the current agent and switch after a short delay
-                StartCoroutine(DestroyAfterDelay());
-            }
         }
-    }
-
-    private IEnumerator DestroyAfterDelay()
-    {
-        yield return new WaitForSeconds(0.1f);
-        Destroy(gameObject);
-        Destroy(areaSwitch);
     }
 
     public void OnSwitchActivated()
     {
         SetReward(1f);
-        RespawnAgentAndSwitch();
+        EnableExistingPlayer();
+        DestroyAgentAndSwitch();
+        EndEpisode();
     }
 
     private void RespawnAgentAndSwitch()
@@ -149,5 +143,19 @@ public class PyramidAgent : Agent
         areaSwitch.transform.rotation = switchDefaultRotation;
 
         m_SwitchLogic.ResetSwitchToDefault();
+    }
+
+    private void DestroyAgentAndSwitch()
+    {
+        // Destroy the agent and switch
+        Destroy(gameObject);
+        Destroy(areaSwitch);
+    }
+
+    private void EnableExistingPlayer()
+    {
+        existingDisabledPlayer.transform.position = newPlayerDefaultPosition;
+        existingDisabledPlayer.transform.rotation = newPlayerDefaultRotation;
+        existingDisabledPlayer.SetActive(true);
     }
 }
