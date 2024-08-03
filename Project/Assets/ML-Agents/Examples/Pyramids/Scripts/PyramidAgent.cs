@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
@@ -15,11 +13,22 @@ public class PyramidAgent : Agent
     public GameObject areaSwitch;
     public bool useVectorObs;
 
+    private Vector3 agentDefaultPosition;
+    private Quaternion agentDefaultRotation;
+    private Vector3 switchDefaultPosition;
+    private Quaternion switchDefaultRotation;
+
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
         m_MyArea = area.GetComponent<PyramidArea>();
         m_SwitchLogic = areaSwitch.GetComponent<PyramidSwitch>();
+
+        // Store default positions and rotations
+        agentDefaultPosition = transform.position;
+        agentDefaultRotation = transform.rotation;
+        switchDefaultPosition = areaSwitch.transform.position;
+        switchDefaultRotation = areaSwitch.transform.rotation;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -105,14 +114,17 @@ public class PyramidAgent : Agent
 
     private void RespawnAgentAndSwitch()
     {
-        var spawnIndexes = Enumerable.Range(0, m_MyArea.spawnAreas.Length).OrderBy(x => Guid.NewGuid()).Take(2).ToArray();
-
         m_AgentRb.velocity = Vector3.zero;
         m_AgentRb.angularVelocity = Vector3.zero;
 
-        m_MyArea.PlaceObject(gameObject, spawnIndexes[0]);
-        transform.rotation = Quaternion.Euler(0f, Random.Range(0, 360f), 0f);
+        // Reset agent position and rotation
+        transform.position = agentDefaultPosition;
+        transform.rotation = agentDefaultRotation;
 
-        m_SwitchLogic.ResetSwitch(spawnIndexes[1]);
+        // Reset switch position and rotation
+        areaSwitch.transform.position = switchDefaultPosition;
+        areaSwitch.transform.rotation = switchDefaultRotation;
+
+        m_SwitchLogic.ResetSwitchToDefault();
     }
 }

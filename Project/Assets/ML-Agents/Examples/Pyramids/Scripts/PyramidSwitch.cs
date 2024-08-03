@@ -9,19 +9,37 @@ public class PyramidSwitch : MonoBehaviour
     private GameObject m_Area;
     private PyramidArea m_AreaComponent;
 
-    public bool GetState()
-    {
-        return m_State;
-    }
+    private Vector3 defaultPosition;
+    private Quaternion defaultRotation;
 
     void Start()
     {
         m_Area = gameObject.transform.parent.gameObject;
         m_AreaComponent = m_Area.GetComponent<PyramidArea>();
+
+        // Store default position and rotation
+        defaultPosition = transform.position;
+        defaultRotation = transform.rotation;
+    }
+
+    public bool GetState()
+    {
+        return m_State;
+    }
+
+    public void ResetSwitchToDefault()
+    {
+        // Reset to default position and rotation
+        transform.position = defaultPosition;
+        transform.rotation = defaultRotation;
+        m_State = false;
+        tag = "switchOff";
+        myButton.GetComponent<Renderer>().material = offMaterial;
     }
 
     public void ResetSwitch(int spawnAreaIndex)
     {
+        // Use this method if you want to keep the random placement functionality
         m_AreaComponent.PlaceObject(gameObject, spawnAreaIndex);
         m_State = false;
         tag = "switchOff";
