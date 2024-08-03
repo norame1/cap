@@ -60,10 +60,16 @@ public class CrossTheRoadAgent : Agent
 
     protected override void Awake()
     {
-        goal = transform.parent.GetComponentInChildren<CrossTheRoadGoal>();
         originalPosition = transform.localPosition;
         agentRigidbody = GetComponent<Rigidbody>();
     }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        goal = transform.parent.GetComponentInChildren<CrossTheRoadGoal>();
+    }
+
 
     public override void OnEpisodeBegin()
     {

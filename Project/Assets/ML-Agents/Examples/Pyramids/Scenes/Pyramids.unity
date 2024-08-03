@@ -1737,7 +1737,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4603070702628152, guid: bd804431e808a492bb5658bcd296e58e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 165.4
+      value: 158.7
       objectReference: {fileID: 0}
     - target: {fileID: 4603070702628152, guid: bd804431e808a492bb5658bcd296e58e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -29071,7 +29071,8 @@ MonoBehaviour:
   stepValue: {fileID: 714487783795755112}
   successMaterial: {fileID: 2100000, guid: d3ecebe7a5fbf8749b3d7e50288222cb, type: 2}
   failureMaterial: {fileID: 2100000, guid: 14b76b33ed8c3ea439ee004f8d4a90a7, type: 2}
-  agentPrefab: {fileID: 0}
+  agentPrefab: {fileID: 3700264087677555919, guid: a1593b7ab23d2ca40858dabfbb61109b,
+    type: 3}
 --- !u!33 &4240782771077365065
 MeshFilter:
   m_ObjectHideFlags: 0

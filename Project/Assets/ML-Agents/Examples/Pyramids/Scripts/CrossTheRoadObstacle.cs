@@ -3,7 +3,7 @@
 public class CrossTheRoadObstacle : MonoBehaviour
 {
     public enum ObstacleType
-    { 
+    {
         Wall,
         Tree
     }
@@ -15,16 +15,25 @@ public class CrossTheRoadObstacle : MonoBehaviour
 
     void Awake()
     {
-        // cache agent
-        agent = transform.parent.parent.GetComponentInChildren<CrossTheRoadAgent>();
+        CacheAgent();
     }
 
     void OnTriggerEnter(Collider collider)
     {
         if (collider.transform.tag.ToLower() == "player")
         {
+            if (agent == null)
+            {
+                CacheAgent();
+            }
+
             Debug.Log($"Collision with {obstacleType}");
             agent.TakeAwayPoints();
         }
+    }
+
+    private void CacheAgent()
+    {
+        agent = transform.parent.parent.GetComponentInChildren<CrossTheRoadAgent>();
     }
 }
