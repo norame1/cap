@@ -965,11 +965,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5022602860645237092, guid: be91649570c658d49b9e2adf47ef4de7,
         type: 3}
-    - target: {fileID: 1562032062036464542, guid: 361ae1ea563fa456db5ba08231237322,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1935390448829093715, guid: 361ae1ea563fa456db5ba08231237322,
         type: 3}
       propertyPath: m_textAlignment
