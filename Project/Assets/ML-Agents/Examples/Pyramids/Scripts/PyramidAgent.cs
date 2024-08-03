@@ -167,6 +167,7 @@ public class PyramidAgent : Agent
         {
             // If the player does not exist, just destroy the current agent and switch
             DestroyAgentAndSwitch();
+            Debug.Log("Player reached the end goal");
         }
     }
 }
