@@ -14,7 +14,7 @@ public class PyramidAgent : Agent
     public GameObject areaSwitch;
     public bool useVectorObs;
 
-    public GameObject newAgent; // Reference to the new agent to be activated
+    public GameObject agentPrefab; // Reference to the agent prefab to instantiate
 
     private Vector3 agentDefaultPosition;
     private Quaternion agentDefaultRotation;
@@ -32,12 +32,6 @@ public class PyramidAgent : Agent
         agentDefaultRotation = transform.rotation;
         switchDefaultPosition = areaSwitch.transform.position;
         switchDefaultRotation = areaSwitch.transform.rotation;
-
-        // Deactivate the new agent initially
-        if (newAgent != null)
-        {
-            newAgent.SetActive(false);
-        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -116,11 +110,11 @@ public class PyramidAgent : Agent
             SetReward(2f);
             EndEpisode();
 
-            // Activate the new agent
-            if (newAgent != null)
+            // Instantiate the new agent
+            if (agentPrefab != null)
             {
-                newAgent.SetActive(true);
-                Debug.Log("New agent activated.");
+                Instantiate(agentPrefab, agentDefaultPosition, agentDefaultRotation);
+                Debug.Log("New agent instantiated.");
 
                 // Schedule the destruction of the current agent and switch after a short delay
                 StartCoroutine(DestroyAfterDelay());
