@@ -35,9 +35,12 @@ public class PyramidAgent : Agent
         switchDefaultPosition = areaSwitch.transform.position;
         switchDefaultRotation = areaSwitch.transform.rotation;
 
-        // Set default position and rotation for the new player
-        newPlayerDefaultPosition = existingDisabledPlayer.transform.position;
-        newPlayerDefaultRotation = existingDisabledPlayer.transform.rotation;
+        if (existingDisabledPlayer != null)
+        {
+            // Set default position and rotation for the new player
+            newPlayerDefaultPosition = existingDisabledPlayer.transform.position;
+            newPlayerDefaultRotation = existingDisabledPlayer.transform.rotation;
+        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -154,8 +157,16 @@ public class PyramidAgent : Agent
 
     private void EnableExistingPlayer()
     {
-        existingDisabledPlayer.transform.position = newPlayerDefaultPosition;
-        existingDisabledPlayer.transform.rotation = newPlayerDefaultRotation;
-        existingDisabledPlayer.SetActive(true);
+        if (existingDisabledPlayer != null)
+        {
+            existingDisabledPlayer.transform.position = newPlayerDefaultPosition;
+            existingDisabledPlayer.transform.rotation = newPlayerDefaultRotation;
+            existingDisabledPlayer.SetActive(true);
+        }
+        else
+        {
+            // If the player does not exist, just destroy the current agent and switch
+            DestroyAgentAndSwitch();
+        }
     }
 }
