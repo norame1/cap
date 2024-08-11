@@ -18264,7 +18264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e72a2b5bd4e6aa4b9206577ba52b667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carDirection: 1
+  carDirection: 0
   minSpeed: 2
   maxSpeed: 6
   maxDistance: -18
@@ -18304,7 +18304,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!33 &1562032060323482124
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -18553,7 +18553,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!33 &1562032061253621152
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -18810,7 +18810,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!33 &1562032061685168704
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -18961,7 +18961,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1562032061903188368
 GameObject:
   m_ObjectHideFlags: 0
@@ -19101,7 +19101,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1562032062054411594
 MonoBehaviour:
   m_ObjectHideFlags: 0
