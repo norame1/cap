@@ -74,7 +74,7 @@ public class PyramidAgent : Agent
                 break;
         }
         transform.Rotate(rotateDir, Time.deltaTime * 200f);
-        m_AgentRb.AddForce(dirToGo * 2f, ForceMode.VelocityChange);
+        m_AgentRb.AddForce(dirToGo * 0.75f, ForceMode.VelocityChange);
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
