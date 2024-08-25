@@ -14,7 +14,7 @@ public class CrossTheRoadAgent : Agent
     private float stepAmount = 1.0f;
 
     [SerializeField]
-    private TextMeshProUGUI rewardValue = null;
+    private TextMeshProUGUI rewardValue = null; 
 
     [SerializeField]
     private TextMeshProUGUI episodesValue = null;
