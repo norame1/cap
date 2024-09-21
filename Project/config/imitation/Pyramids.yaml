@@ -4,17 +4,17 @@ behaviors:
     time_horizon: 128
     max_steps: 1.0e7
     hyperparameters:
-      batch_size: 128
+      batch_size: 64  # Reduced to improve learning stability
       beta: 0.01
-      buffer_size: 2048
+      buffer_size: 1024  # Smaller buffer to learn from more recent experiences
       epsilon: 0.2
       lambd: 0.95
-      learning_rate: 0.0003
-      num_epoch: 3
+      learning_rate: 0.0001  # Reduced to ensure more stable learning
+      num_epoch: 4  # Increased for more updates per batch
     network_settings:
       num_layers: 2
-      normalize: false
-      hidden_units: 512
+      normalize: true  # Normalize input observations for better learning
+      hidden_units: 256  # Reduced to avoid overfitting
     reward_signals:
       extrinsic:
         strength: 1.0
@@ -23,12 +23,12 @@ behaviors:
         strength: 0.02
         gamma: 0.99
         network_settings:
-          hidden_units: 256
+          hidden_units: 128  # Reduced to avoid overfitting
       gail:
-        strength: 0.01
+        strength: 0.05  # Increased to encourage imitation
         gamma: 0.99
         demo_path: demos/demoimit.demo
     behavioral_cloning:
       demo_path: demos/demoimit.demo
-      strength: 0.5
-      steps: 150000
+      strength: 1.0  # Increased to prioritize imitation learning
+      steps: 200000  # Increased to allow more imitation learning steps
