@@ -1,0 +1,47 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1724573799",
+        "python_version": "3.7.9 (tags/v3.7.9:13c94747c7, Aug 17 2020, 18:58:18) [MSC v.1900 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\Users\\Gautam\\My_project\\venv\\Scripts\\mlagents-learn config/imitation/Pyramids.yaml --run-id=imit --results-dir=results/ --force",
+        "mlagents_version": "0.29.0",
+        "mlagents_envs_version": "0.29.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "1.8.1+cu111",
+        "numpy_version": "1.21.2",
+        "end_time_seconds": "1724573820"
+    },
+    "total": 20.7668301,
+    "count": 1,
+    "self": 0.009870699999996901,
+    "children": {
+        "run_training.setup": {
+            "total": 0.07175969999999998,
+            "count": 1,
+            "self": 0.07175969999999998
+        },
+        "TrainerController.start_learning": {
+            "total": 20.685199700000002,
+            "count": 1,
+            "self": 0.0004555999999986682,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 20.6847348,
+                    "count": 1,
+                    "self": 20.6847348
+                },
+                "trainer_threads": {
+                    "total": 1.1000000021965661e-06,
+                    "count": 1,
+                    "self": 1.1000000021965661e-06
+                },
+                "TrainerController._save_models": {
+                    "total": 8.19999999990273e-06,
+                    "count": 1,
+                    "self": 8.19999999990273e-06
+                }
+            }
+        }
+    }
+}
