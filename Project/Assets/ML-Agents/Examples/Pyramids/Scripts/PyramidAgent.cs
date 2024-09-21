@@ -15,9 +15,6 @@ public class PyramidAgent : Agent
 
     public GameObject existingDisabledPlayer; // Reference to the disabled player
 
-    [SerializeField]
-    private Animator agentAnimator; // Reference to the Animator component
-
     private Vector3 newPlayerDefaultPosition;
     private Quaternion newPlayerDefaultRotation;
 
@@ -65,31 +62,19 @@ public class PyramidAgent : Agent
         {
             case 1:
                 dirToGo = transform.forward * 1f;
-                agentAnimator.SetFloat("ver", 1f); // Move forward
-                agentAnimator.SetFloat("hor", 0f); // No sideways movement
                 break;
             case 2:
                 dirToGo = transform.forward * -1f;
-                agentAnimator.SetFloat("ver", -1f); // Move backward
-                agentAnimator.SetFloat("hor", 0f); // No sideways movement
                 break;
             case 3:
                 rotateDir = transform.up * 1f;
-                agentAnimator.SetFloat("hor", 1f); // Rotate right
-                agentAnimator.SetFloat("ver", 0f); // No forward/backward movement
                 break;
             case 4:
                 rotateDir = transform.up * -1f;
-                agentAnimator.SetFloat("hor", -1f); // Rotate left
-                agentAnimator.SetFloat("ver", 0f); // No forward/backward movement
-                break;
-            default:
-                agentAnimator.SetFloat("ver", 0f);
-                agentAnimator.SetFloat("hor", 0f);
                 break;
         }
         transform.Rotate(rotateDir, Time.deltaTime * 200f);
-        m_AgentRb.AddForce(dirToGo * 0.9f, ForceMode.VelocityChange);
+        m_AgentRb.AddForce(dirToGo * 2f, ForceMode.VelocityChange);
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
@@ -121,6 +106,7 @@ public class PyramidAgent : Agent
 
     public override void OnEpisodeBegin()
     {
+        // Only respawn if the switch and agent exist
         if (areaSwitch != null && gameObject != null)
         {
             RespawnAgentAndSwitch();
@@ -151,9 +137,11 @@ public class PyramidAgent : Agent
         m_AgentRb.velocity = Vector3.zero;
         m_AgentRb.angularVelocity = Vector3.zero;
 
+        // Reset agent position and rotation
         transform.position = agentDefaultPosition;
         transform.rotation = agentDefaultRotation;
 
+        // Reset switch position and rotation
         areaSwitch.transform.position = switchDefaultPosition;
         areaSwitch.transform.rotation = switchDefaultRotation;
 
@@ -162,6 +150,7 @@ public class PyramidAgent : Agent
 
     private void DestroyAgentAndSwitch()
     {
+        // Destroy the agent and switch
         Destroy(gameObject);
         Destroy(areaSwitch);
     }
@@ -176,6 +165,7 @@ public class PyramidAgent : Agent
         }
         else
         {
+            // If the player does not exist, just destroy the current agent and switch
             DestroyAgentAndSwitch();
             Debug.Log("Player reached the end goal");
         }

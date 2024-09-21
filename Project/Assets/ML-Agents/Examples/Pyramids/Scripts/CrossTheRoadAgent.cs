@@ -29,10 +29,7 @@ public class CrossTheRoadAgent : Agent
     private Material failureMaterial;
 
     [SerializeField]
-    private GameObject agentPrefab; // Reference to the agent prefab
-
-    [SerializeField]
-    private Animator agentAnimator; // Reference to the Animator component
+    private GameObject agentPrefab; // Add a reference to the agent prefab
 
     private CrossTheRoadGoal goal = null;
 
@@ -58,6 +55,9 @@ public class CrossTheRoadAgent : Agent
         Forward
     }
 
+    // Remove this line if moveToDirection is not used
+    // private MoveToDirection moveToDirection = MoveToDirection.Idle;
+
     protected override void Awake()
     {
         originalPosition = transform.localPosition;
@@ -70,6 +70,7 @@ public class CrossTheRoadAgent : Agent
         goal = transform.parent.GetComponentInChildren<CrossTheRoadGoal>();
     }
 
+
     public override void OnEpisodeBegin()
     {
         transform.localPosition = moveTo = originalPosition;
@@ -79,7 +80,10 @@ public class CrossTheRoadAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        // 3 observations - x, y, z
         sensor.AddObservation(transform.localPosition);
+
+        // 3 observations - x, y, z
         sensor.AddObservation(goal.transform.localPosition);
     }
 
@@ -107,25 +111,21 @@ public class CrossTheRoadAgent : Agent
         {
             case 0: // idle
                 moveTo = transform.localPosition;
-                agentAnimator.SetFloat("ver", 0f);
-                agentAnimator.SetFloat("hor", 0f);
+                // moveToDirection = MoveToDirection.Idle; // Comment out if not used
                 break;
             case 1: // left
                 moveTo = new Vector3(transform.localPosition.x - stepAmount, transform.localPosition.y, transform.localPosition.z);
-                agentAnimator.SetFloat("hor", -1f);
-                agentAnimator.SetFloat("ver", 0f);
+                // moveToDirection = MoveToDirection.Left; // Comment out if not used
                 moveInProgress = true;
                 break;
             case 2: // right
                 moveTo = new Vector3(transform.localPosition.x + stepAmount, transform.localPosition.y, transform.localPosition.z);
-                agentAnimator.SetFloat("hor", 1f);
-                agentAnimator.SetFloat("ver", 0f);
+                // moveToDirection = MoveToDirection.Right; // Comment out if not used
                 moveInProgress = true;
                 break;
             case 3: // forward
                 moveTo = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + stepAmount);
-                agentAnimator.SetFloat("ver", 1f);
-                agentAnimator.SetFloat("hor", 0f);
+                // moveToDirection = MoveToDirection.Forward; // Comment out if not used
                 moveInProgress = true;
                 break;
         }
@@ -134,7 +134,9 @@ public class CrossTheRoadAgent : Agent
     public void GivePoints()
     {
         AddReward(1.0f);
+
         UpdateStats();
+
         StartCoroutine(SwapGroundMaterial(successMaterial, 0.5f));
         InstantiateNewAgent();
     }
@@ -142,8 +144,11 @@ public class CrossTheRoadAgent : Agent
     public void TakeAwayPoints()
     {
         AddReward(-0.025f);
+
         UpdateStats();
+
         EndEpisode();
+
         StartCoroutine(SwapGroundMaterial(failureMaterial, 0.5f));
     }
 
@@ -159,19 +164,25 @@ public class CrossTheRoadAgent : Agent
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActionsOut = actionsOut.DiscreteActions;
-        discreteActionsOut[0] = 0; // idle
+        //idle
+        discreteActionsOut[0] = 0;
 
+        //move left
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            discreteActionsOut[0] = 1; // move left
+            discreteActionsOut[0] = 1;
         }
+
+        //move right
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            discreteActionsOut[0] = 2; // move right
+            discreteActionsOut[0] = 2;
         }
+
+        //move forward
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            discreteActionsOut[0] = 3; // move forward
+            discreteActionsOut[0] = 3;
         }
     }
 
@@ -183,7 +194,10 @@ public class CrossTheRoadAgent : Agent
 
     private void InstantiateNewAgent()
     {
+        // Instantiate a new agent at the current position
         Instantiate(agentPrefab, transform.position, transform.rotation);
+
+        // Destroy the current agent
         Destroy(gameObject);
     }
 }
