@@ -11,21 +11,17 @@ public class PyramidAgent : Agent
     private Rigidbody m_AgentRb;
     private PyramidSwitch m_SwitchLogic;
     public GameObject areaSwitch;
-    public GameObject crossTheRoadAgent; // Reference to Cross the Road Agent
-    public GameObject crossTheRoadGoal; // Reference to Cross the Road Goal
     public bool useVectorObs;
     public Vector3 agentLocalSpawnPosition;
     public Vector3 switchLocalSpawnPosition;
+
+    private bool hasReachedGoal = false; // Variable to track if the agent has reached the goal
 
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
         m_MyArea = area.GetComponent<PyramidArea>();
         m_SwitchLogic = areaSwitch.GetComponent<PyramidSwitch>();
-
-        // Ensure Cross the Road Agent is initially deactivated
-        crossTheRoadAgent.SetActive(false);
-        crossTheRoadGoal.SetActive(false);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -39,6 +35,8 @@ public class PyramidAgent : Agent
 
     public void MoveAgent(ActionSegment<int> act)
     {
+        if (hasReachedGoal) return; // Prevent further movement if goal is reached
+
         var dirToGo = Vector3.zero;
         var rotateDir = Vector3.zero;
 
@@ -64,6 +62,8 @@ public class PyramidAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
+        if (hasReachedGoal) return; // Prevent further actions if goal is reached
+
         AddReward(-1f / MaxStep);
         MoveAgent(actionBuffers.DiscreteActions);
     }
@@ -91,23 +91,38 @@ public class PyramidAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        RespawnAgentAndSwitch();
+        if (!hasReachedGoal) // Only respawn if the goal hasn't been reached yet
+        {
+            RespawnAgentAndSwitch();
+        }
+        else
+        {
+            EndEpisode(); // End the episode and prevent further respawn
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("switchOn"))
+        if (collision.gameObject.CompareTag("goal") && !hasReachedGoal)
+        {
+            hasReachedGoal = true; // Set the flag to prevent further movement or actions
+            SetReward(3f); // Reward for reaching the goal
+            DisableAgent(); // Disable the agent instead of destroying it
+        }
+        else if (collision.gameObject.CompareTag("switchOn"))
         {
             SetReward(2f);
-            ActivateCrossTheRoadAgent();
             EndEpisode();
         }
     }
 
     public void OnSwitchActivated()
     {
-        SetReward(1f);
-        RespawnAgentAndSwitch();
+        if (!hasReachedGoal) // Ensure this only happens if the agent hasn't reached the goal
+        {
+            SetReward(1f);
+            RespawnAgentAndSwitch();
+        }
     }
 
     private void RespawnAgentAndSwitch()
@@ -123,14 +138,9 @@ public class PyramidAgent : Agent
         m_SwitchLogic.ResetSwitch(switchLocalSpawnPosition);
     }
 
-    private void ActivateCrossTheRoadAgent()
+    private void DisableAgent()
     {
-        // Deactivate Pyramid Agent and its goal
+        // Deactivate the agent instead of destroying it to avoid episode restart issues
         gameObject.SetActive(false);
-        areaSwitch.SetActive(false);
-
-        // Activate Cross the Road Agent and its goal
-        crossTheRoadAgent.SetActive(true);
-        crossTheRoadGoal.SetActive(true);
     }
 }

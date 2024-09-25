@@ -30,6 +30,11 @@ TagManager:
   - purpleAgent
   - purpleGoal
   - tile
+  - tree
+  - car
+  - Floor
+  - switchOn1
+  - switchOn2
   layers:
   - Default
   - TransparentFX
