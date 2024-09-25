@@ -11,17 +11,11 @@ public class PyramidAgent : Agent
     private Rigidbody m_AgentRb;
     private PyramidSwitch m_SwitchLogic;
     public GameObject areaSwitch;
+    public GameObject crossTheRoadAgent; // Reference to Cross the Road Agent
+    public GameObject crossTheRoadGoal; // Reference to Cross the Road Goal
     public bool useVectorObs;
-
-    public GameObject existingDisabledPlayer; // Reference to the disabled player
-
-    private Vector3 newPlayerDefaultPosition;
-    private Quaternion newPlayerDefaultRotation;
-
-    private Vector3 agentDefaultPosition;
-    private Quaternion agentDefaultRotation;
-    private Vector3 switchDefaultPosition;
-    private Quaternion switchDefaultRotation;
+    public Vector3 agentLocalSpawnPosition;
+    public Vector3 switchLocalSpawnPosition;
 
     public override void Initialize()
     {
@@ -29,18 +23,9 @@ public class PyramidAgent : Agent
         m_MyArea = area.GetComponent<PyramidArea>();
         m_SwitchLogic = areaSwitch.GetComponent<PyramidSwitch>();
 
-        // Store default positions and rotations
-        agentDefaultPosition = transform.position;
-        agentDefaultRotation = transform.rotation;
-        switchDefaultPosition = areaSwitch.transform.position;
-        switchDefaultRotation = areaSwitch.transform.rotation;
-
-        if (existingDisabledPlayer != null)
-        {
-            // Set default position and rotation for the new player
-            newPlayerDefaultPosition = existingDisabledPlayer.transform.position;
-            newPlayerDefaultRotation = existingDisabledPlayer.transform.rotation;
-        }
+        // Ensure Cross the Road Agent is initially deactivated
+        crossTheRoadAgent.SetActive(false);
+        crossTheRoadGoal.SetActive(false);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -74,7 +59,7 @@ public class PyramidAgent : Agent
                 break;
         }
         transform.Rotate(rotateDir, Time.deltaTime * 200f);
-        m_AgentRb.AddForce(dirToGo * 2f, ForceMode.VelocityChange);
+        m_AgentRb.AddForce(dirToGo * 0.75f, ForceMode.VelocityChange);
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
@@ -106,11 +91,7 @@ public class PyramidAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        // Only respawn if the switch and agent exist
-        if (areaSwitch != null && gameObject != null)
-        {
-            RespawnAgentAndSwitch();
-        }
+        RespawnAgentAndSwitch();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -118,8 +99,7 @@ public class PyramidAgent : Agent
         if (collision.gameObject.CompareTag("switchOn"))
         {
             SetReward(2f);
-            EnableExistingPlayer();
-            DestroyAgentAndSwitch();
+            ActivateCrossTheRoadAgent();
             EndEpisode();
         }
     }
@@ -127,9 +107,7 @@ public class PyramidAgent : Agent
     public void OnSwitchActivated()
     {
         SetReward(1f);
-        EnableExistingPlayer();
-        DestroyAgentAndSwitch();
-        EndEpisode();
+        RespawnAgentAndSwitch();
     }
 
     private void RespawnAgentAndSwitch()
@@ -137,37 +115,22 @@ public class PyramidAgent : Agent
         m_AgentRb.velocity = Vector3.zero;
         m_AgentRb.angularVelocity = Vector3.zero;
 
-        // Reset agent position and rotation
-        transform.position = agentDefaultPosition;
-        transform.rotation = agentDefaultRotation;
+        // Set local spawn position for the agent
+        transform.localPosition = agentLocalSpawnPosition;
+        transform.localRotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0, 360f), 0f);
 
-        // Reset switch position and rotation
-        areaSwitch.transform.position = switchDefaultPosition;
-        areaSwitch.transform.rotation = switchDefaultRotation;
-
-        m_SwitchLogic.ResetSwitchToDefault();
+        // Set local spawn position for the switch
+        m_SwitchLogic.ResetSwitch(switchLocalSpawnPosition);
     }
 
-    private void DestroyAgentAndSwitch()
+    private void ActivateCrossTheRoadAgent()
     {
-        // Destroy the agent and switch
-        Destroy(gameObject);
-        Destroy(areaSwitch);
-    }
+        // Deactivate Pyramid Agent and its goal
+        gameObject.SetActive(false);
+        areaSwitch.SetActive(false);
 
-    private void EnableExistingPlayer()
-    {
-        if (existingDisabledPlayer != null)
-        {
-            existingDisabledPlayer.transform.position = newPlayerDefaultPosition;
-            existingDisabledPlayer.transform.rotation = newPlayerDefaultRotation;
-            existingDisabledPlayer.SetActive(true);
-        }
-        else
-        {
-            // If the player does not exist, just destroy the current agent and switch
-            DestroyAgentAndSwitch();
-            Debug.Log("Player reached the end goal");
-        }
+        // Activate Cross the Road Agent and its goal
+        crossTheRoadAgent.SetActive(true);
+        crossTheRoadGoal.SetActive(true);
     }
 }
