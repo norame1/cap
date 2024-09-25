@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 8738224866654042163}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 13, y: 0, z: 17}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -147,9 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd01d977612744528db278c446e9a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onMaterial: {fileID: 2100000, guid: c67450f290f3e4897bc40276a619e78d, type: 2}
-  offMaterial: {fileID: 2100000, guid: 5c59bd36def9a4684be49a21cf201a2d, type: 2}
-  myButton: {fileID: 8738627948470587895}
+  switchOn: 0
 --- !u!1 &8738627948470587895
 GameObject:
   m_ObjectHideFlags: 0

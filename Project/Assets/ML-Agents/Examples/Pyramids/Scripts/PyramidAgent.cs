@@ -17,6 +17,9 @@ public class PyramidAgent : Agent
 
     private bool hasReachedGoal = false; // Variable to track if the agent has reached the goal
 
+    [SerializeField]
+    private Animator agentAnimator; // Reference to the Animator component
+
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
@@ -45,15 +48,27 @@ public class PyramidAgent : Agent
         {
             case 1:
                 dirToGo = transform.forward * 1f;
+                agentAnimator.SetFloat("ver", 1f); // Move forward
+                agentAnimator.SetFloat("hor", 0f); // No sideways movement
                 break;
             case 2:
                 dirToGo = transform.forward * -1f;
+                agentAnimator.SetFloat("ver", -1f); // Move backward
+                agentAnimator.SetFloat("hor", 0f); // No sideways movement
                 break;
             case 3:
                 rotateDir = transform.up * 1f;
+                agentAnimator.SetFloat("hor", 1f); // Rotate right
+                agentAnimator.SetFloat("ver", 0f); // No forward/backward movement
                 break;
             case 4:
                 rotateDir = transform.up * -1f;
+                agentAnimator.SetFloat("hor", -1f); // Rotate left
+                agentAnimator.SetFloat("ver", 0f); // No forward/backward movement
+                break;
+            default:
+                agentAnimator.SetFloat("ver", 0f);
+                agentAnimator.SetFloat("hor", 0f);
                 break;
         }
         transform.Rotate(rotateDir, Time.deltaTime * 200f);
