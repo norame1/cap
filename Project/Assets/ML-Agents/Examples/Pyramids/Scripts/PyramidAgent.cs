@@ -20,11 +20,17 @@ public class PyramidAgent : Agent
     [SerializeField]
     private Animator agentAnimator; // Reference to the Animator component
 
+    [SerializeField]
+    private float animationSpeed = 5f; // Speed at which the animation blends
+
     public override void Initialize()
     {
         m_AgentRb = GetComponent<Rigidbody>();
         m_MyArea = area.GetComponent<PyramidArea>();
         m_SwitchLogic = areaSwitch.GetComponent<PyramidSwitch>();
+
+        // Ensure Animator is set to update in sync with physics
+        agentAnimator.updateMode = AnimatorUpdateMode.AnimatePhysics;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -42,37 +48,41 @@ public class PyramidAgent : Agent
 
         var dirToGo = Vector3.zero;
         var rotateDir = Vector3.zero;
+        float targetVer = 0f;
+        float targetHor = 0f;
 
         var action = act[0];
         switch (action)
         {
             case 1:
                 dirToGo = transform.forward * 1f;
-                agentAnimator.SetFloat("ver", 1f); // Move forward
-                agentAnimator.SetFloat("hor", 0f); // No sideways movement
+                targetVer = 1f; // Move forward
                 break;
             case 2:
                 dirToGo = transform.forward * -1f;
-                agentAnimator.SetFloat("ver", -1f); // Move backward
-                agentAnimator.SetFloat("hor", 0f); // No sideways movement
+                targetVer = -1f; // Move backward
                 break;
             case 3:
                 rotateDir = transform.up * 1f;
-                agentAnimator.SetFloat("hor", 1f); // Rotate right
-                agentAnimator.SetFloat("ver", 0f); // No forward/backward movement
+                targetHor = 1f; // Rotate right
                 break;
             case 4:
                 rotateDir = transform.up * -1f;
-                agentAnimator.SetFloat("hor", -1f); // Rotate left
-                agentAnimator.SetFloat("ver", 0f); // No forward/backward movement
+                targetHor = -1f; // Rotate left
                 break;
             default:
-                agentAnimator.SetFloat("ver", 0f);
-                agentAnimator.SetFloat("hor", 0f);
+                targetVer = 0f;
+                targetHor = 0f;
                 break;
         }
+
+        // Apply rotation and movement forces
         transform.Rotate(rotateDir, Time.deltaTime * 200f);
-        m_AgentRb.AddForce(dirToGo * 0.75f, ForceMode.VelocityChange);
+        m_AgentRb.AddForce(dirToGo * 0.5f, ForceMode.VelocityChange);
+
+        // Smooth animation blending
+        agentAnimator.SetFloat("ver", Mathf.Lerp(agentAnimator.GetFloat("ver"), targetVer, Time.deltaTime * animationSpeed));
+        agentAnimator.SetFloat("hor", Mathf.Lerp(agentAnimator.GetFloat("hor"), targetHor, Time.deltaTime * animationSpeed));
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)

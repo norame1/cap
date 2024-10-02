@@ -203,7 +203,8 @@ MonoBehaviour:
   areaSwitch: {fileID: 8738224866654042163, guid: 0255629b94c6541439ee8f605e2a1f2f,
     type: 3}
   useVectorObs: 1
-  existingDisabledPlayer: {fileID: 0}
+  agentLocalSpawnPosition: {x: 0, y: 0, z: 0}
+  switchLocalSpawnPosition: {x: 0, y: 0, z: 0}
   agentAnimator: {fileID: 7570951186143903304}
 --- !u!65 &3841088961895236934
 BoxCollider:
@@ -273,8 +274,8 @@ MonoBehaviour:
   m_UseBatchedRaycasts: 0
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
-  m_StartVerticalOffset: 0
-  m_EndVerticalOffset: 0
+  m_StartVerticalOffset: 1.64
+  m_EndVerticalOffset: -8.02
 --- !u!114 &7326327833107615368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,8 +308,8 @@ MonoBehaviour:
   m_UseBatchedRaycasts: 0
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
-  m_StartVerticalOffset: 0
-  m_EndVerticalOffset: 5
+  m_StartVerticalOffset: 1.64
+  m_EndVerticalOffset: -3.68
 --- !u!114 &8372860404159723334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,8 +342,8 @@ MonoBehaviour:
   m_UseBatchedRaycasts: 0
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
-  m_StartVerticalOffset: 0
-  m_EndVerticalOffset: 10
+  m_StartVerticalOffset: 1.64
+  m_EndVerticalOffset: -0.19
 --- !u!114 &7818224347265264566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -549,7 +550,7 @@ Transform:
   m_GameObject: {fileID: 3865076577316098284}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.583, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

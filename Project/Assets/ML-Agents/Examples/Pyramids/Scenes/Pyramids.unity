@@ -1935,6 +1935,31 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7326327833107615368, guid: a225982b1a9f01f46985042bd60f861f,
+        type: 3}
+      propertyPath: m_EndVerticalOffset
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7326327833107615368, guid: a225982b1a9f01f46985042bd60f861f,
+        type: 3}
+      propertyPath: m_StartVerticalOffset
+      value: 2.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 8372860404159723334, guid: a225982b1a9f01f46985042bd60f861f,
+        type: 3}
+      propertyPath: m_EndVerticalOffset
+      value: -3.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 8372860404159723334, guid: a225982b1a9f01f46985042bd60f861f,
+        type: 3}
+      propertyPath: m_StartVerticalOffset
+      value: 2.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854424630299412443, guid: a225982b1a9f01f46985042bd60f861f,
+        type: 3}
+      propertyPath: m_StartVerticalOffset
+      value: 2.73
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1990,6 +2015,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Agent (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3864767316738021886, guid: a225982b1a9f01f46985042bd60f861f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3870387245355905176, guid: a225982b1a9f01f46985042bd60f861f,
         type: 3}
