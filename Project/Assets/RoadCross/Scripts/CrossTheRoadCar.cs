@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
 public class CrossTheRoadCar : MonoBehaviour
@@ -7,12 +7,12 @@ public class CrossTheRoadCar : MonoBehaviour
     private CarDirection carDirection = CarDirection.North;
 
     [SerializeField]
-    [Range(0.5f, 25.0f)]
-    private float minSpeed = 5.0f;
+    [Range(30.0f, 40.0f)]
+    private float minSpeed = 30.0f;
 
     [SerializeField]
-    [Range(0.5f, 25.0f)]
-    private float maxSpeed = 10.0f;
+    [Range(40.0f, 45.0f)]
+    private float maxSpeed = 40.0f;
 
     private float speed = 0;
 
