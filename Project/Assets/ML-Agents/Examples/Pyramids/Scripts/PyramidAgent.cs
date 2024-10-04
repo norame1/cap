@@ -48,31 +48,21 @@ public class PyramidAgent : Agent
 
         var dirToGo = Vector3.zero;
         var rotateDir = Vector3.zero;
-        float targetVer = 0f;
-        float targetHor = 0f;
 
         var action = act[0];
         switch (action)
         {
             case 1:
-                dirToGo = transform.forward * 1f;
-                targetVer = 1f; // Move forward
+                dirToGo = transform.forward * 1f; // Move forward
                 break;
             case 2:
-                dirToGo = transform.forward * -1f;
-                targetVer = -1f; // Move backward
+                dirToGo = transform.forward * -1f; // Move backward
                 break;
             case 3:
-                rotateDir = transform.up * 1f;
-                targetHor = 1f; // Rotate right
+                rotateDir = transform.up * 1f; // Rotate right
                 break;
             case 4:
-                rotateDir = transform.up * -1f;
-                targetHor = -1f; // Rotate left
-                break;
-            default:
-                targetVer = 0f;
-                targetHor = 0f;
+                rotateDir = transform.up * -1f; // Rotate left
                 break;
         }
 
@@ -80,9 +70,22 @@ public class PyramidAgent : Agent
         transform.Rotate(rotateDir, Time.deltaTime * 200f);
         m_AgentRb.AddForce(dirToGo * 0.5f, ForceMode.VelocityChange);
 
-        // Smooth animation blending
-        agentAnimator.SetFloat("ver", Mathf.Lerp(agentAnimator.GetFloat("ver"), targetVer, Time.deltaTime * animationSpeed));
-        agentAnimator.SetFloat("hor", Mathf.Lerp(agentAnimator.GetFloat("hor"), targetHor, Time.deltaTime * animationSpeed));
+        // Animate agent based on speed
+        AnimateAgent();
+    }
+
+    private void AnimateAgent()
+    {
+        // Calculate the speed of the agent based on its current velocity
+        float speed = m_AgentRb.velocity.magnitude;
+
+        // Determine movement direction
+        float forwardSpeed = Vector3.Dot(m_AgentRb.velocity, transform.forward); // Forward/backward
+        float rotationSpeed = m_AgentRb.angularVelocity.y; // Yaw rotation
+
+        // Smooth animation blending using the speed and rotation values
+        agentAnimator.SetFloat("ver", Mathf.Lerp(agentAnimator.GetFloat("ver"), forwardSpeed, Time.deltaTime * animationSpeed));
+        agentAnimator.SetFloat("hor", Mathf.Lerp(agentAnimator.GetFloat("hor"), rotationSpeed, Time.deltaTime * animationSpeed));
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
