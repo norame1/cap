@@ -206,6 +206,8 @@ MonoBehaviour:
   agentLocalSpawnPosition: {x: 0, y: 0, z: 0}
   switchLocalSpawnPosition: {x: 0, y: 0, z: 0}
   agentAnimator: {fileID: 184700432672663631}
+  animationSpeed: 5
+  newPlayerPrefab: {fileID: 0}
 --- !u!65 &3841088961895236934
 BoxCollider:
   m_ObjectHideFlags: 0
