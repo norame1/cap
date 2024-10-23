@@ -4,7 +4,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 
-public class PyramidAgent : Agent
+public class PyramidAgent_2 : Agent
 {
     public GameObject area;
     private PyramidArea m_MyArea;
@@ -85,7 +85,7 @@ public class PyramidAgent : Agent
             // Perform the raycast
             if (Physics.Raycast(transform.position, rayDirection, out hit, rayLength))
             {
-                if (hit.collider.CompareTag("switchOn"))
+                if (hit.collider.CompareTag("switchOn2"))
                 {
                     // Move directly toward the detected switch
                     targetPosition = hit.point;
@@ -191,13 +191,13 @@ public class PyramidAgent : Agent
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("switchOn") && !hasReachedGoal)
+        if (collision.gameObject.CompareTag("switchOn2") && !hasReachedGoal)
         {
             hasReachedGoal = true;
             SetReward(3f);
             DestroyAndSpawnNewAgent();
         }
-        else if (collision.gameObject.CompareTag("switchOn"))
+        else if (collision.gameObject.CompareTag("switchOn2"))
         {
             SetReward(2f);
             EndEpisode();
