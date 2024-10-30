@@ -4,7 +4,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 
-public class PyramidAgent : Agent
+public class JoggerAgent : Agent
 {
     public GameObject area;
     private PyramidArea m_MyArea;
@@ -26,7 +26,7 @@ public class PyramidAgent : Agent
     private GameObject newPlayerPrefab;
 
     private bool hasReachedGoal = false;
-    private const float moveSpeed = 5f;
+    private const float moveSpeed = 7.5f;
     private const float rotateSpeed = 150f;
     private Vector3 targetPosition;
     Color orange = new Color(1.0f, 0.5f, 0.0f);
