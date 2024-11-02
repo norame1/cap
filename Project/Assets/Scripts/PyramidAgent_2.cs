@@ -34,6 +34,7 @@ public class PyramidAgent_2 : Agent
     private float stuckTimeThreshold = 2.0f; // Time in seconds before considering stuck
     private float stuckTimer = 0f; // Timer to track time of being stuck
     private bool isStuck = false; // To track whether the agent is currently stuck
+    private Vector3 lastStuckPosition; // Track the last position where the agent was stuck
 
     public override void Initialize()
     {
@@ -43,6 +44,7 @@ public class PyramidAgent_2 : Agent
         agentAnimator.updateMode = AnimatorUpdateMode.AnimatePhysics;
 
         lastPosition = transform.position; // Initialize last known position
+        lastStuckPosition = Vector3.zero; // Initialize the last stuck position
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -69,7 +71,7 @@ public class PyramidAgent_2 : Agent
 
         // Only if the agent is not stuck, perform the raycast to find the switch
         RaycastHit hit;
-        float rayLength = 100f; // Max ray length for better detection
+        float rayLength = 1000f; // Max ray length for better detection
         int rayCount = 36; // Number of rays in 360 degrees
         float angleStep = 360f / rayCount; // Angle between each ray
 
@@ -81,13 +83,13 @@ public class PyramidAgent_2 : Agent
             // Calculate the direction for the current ray
             float currentAngle = i * angleStep;
             Vector3 rayDirection = Quaternion.Euler(0, currentAngle, 0) * transform.forward;
-            Debug.DrawRay(transform.position, rayDirection * rayLength, orange);
+            // Debug.DrawRay(transform.position, rayDirection * rayLength, orange);
             // Perform the raycast
             if (Physics.Raycast(transform.position, rayDirection, out hit, rayLength))
             {
-                if (hit.collider.CompareTag("switchOn2"))
+                if (hit.collider.CompareTag("switchOn2") && Vector3.Distance(hit.point, lastStuckPosition) > 1.0f)
                 {
-                    // Move directly toward the detected switch
+                    // Move directly toward the detected switch if it is sufficiently different from the last stuck position
                     targetPosition = hit.point;
                     switchDetected = true;
                     break; // Stop casting further rays once a switch is detected
@@ -185,6 +187,7 @@ public class PyramidAgent_2 : Agent
             RespawnAgentAndSwitch();
         }
         lastPosition = transform.position; // Reset last known position
+        lastStuckPosition = Vector3.zero; // Reset last stuck position
         stuckTimer = 0f; // Reset stuck timer
         isStuck = false; // Reset stuck state
     }
@@ -195,6 +198,7 @@ public class PyramidAgent_2 : Agent
         {
             hasReachedGoal = true;
             SetReward(3f);
+            lastStuckPosition = transform.position; // Update the last stuck position when reaching the goal
             DestroyAndSpawnNewAgent();
         }
         else if (collision.gameObject.CompareTag("switchOn2"))
@@ -223,41 +227,30 @@ public class PyramidAgent_2 : Agent
 
         m_SwitchLogic.ResetSwitch(switchLocalSpawnPosition);
         lastPosition = transform.position; // Reset last known position after respawn
+        lastStuckPosition = Vector3.zero; // Reset last stuck position
         stuckTimer = 0f; // Reset stuck timer
         isStuck = false; // Reset stuck state
     }
 
-    private int rightRotationAttempts = 0; // Track how many right rotations have been attempted
-
     private void DetectAndHandleStuck()
     {
-        // Calculate distance moved since last frame
+        // Calculate distance moved since the last frame
         float distanceMoved = Vector3.Distance(transform.position, lastPosition);
 
-        // If distance moved is small, increase the stuck timer
+        // If the distance moved is small, increase the stuck timer
         if (distanceMoved < 0.05f)
         {
             stuckTimer += Time.deltaTime;
 
-            // If the stuck timer exceeds the threshold, try rotating to the right and moving forward
+            // If the stuck timer exceeds the threshold, attempt a 90-degree rotation
             if (stuckTimer > stuckTimeThreshold)
             {
                 isStuck = true; // Mark the agent as stuck
+                lastStuckPosition = transform.position; // Update the last stuck position
 
-                // Rotate the agent to the right by 90 degrees
-                transform.Rotate(0, 90f, 0);  // Rotate right (90 degrees)
-
-                // Take a step forward after rotating
-                m_AgentRb.velocity = transform.forward * (moveSpeed); // Move forward with full speed for a step
-
-                // Increment the right rotation attempts
-                rightRotationAttempts++;
-
-                // If the agent has completed 4 right rotations (full 360 degrees), reset attempts
-                if (rightRotationAttempts >= 4)
-                {
-                    rightRotationAttempts = 0; // Reset the counter after a full turn
-                }
+                // Rotate the agent 90 degrees and try moving forward
+                transform.Rotate(0, 90f, 0); // Rotate right by 90 degrees
+                m_AgentRb.velocity = transform.forward * moveSpeed; // Move forward with full speed
 
                 stuckTimer = 0f; // Reset the stuck timer after rotating and stepping forward
             }
@@ -267,13 +260,11 @@ public class PyramidAgent_2 : Agent
             // If the agent has moved, reset the stuck timer and right rotation attempts
             stuckTimer = 0f;
             isStuck = false; // The agent is no longer stuck
-            rightRotationAttempts = 0; // Reset the right rotation attempts after moving
         }
 
         // Update the last known position
         lastPosition = transform.position;
     }
-
 
     private void DestroyAndSpawnNewAgent()
     {
