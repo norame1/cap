@@ -81,7 +81,7 @@ public class RunnerAgent : Agent
             // Calculate the direction for the current ray
             float currentAngle = i * angleStep;
             Vector3 rayDirection = Quaternion.Euler(0, currentAngle, 0) * transform.forward;
-            Debug.DrawRay(transform.position, rayDirection * rayLength, orange);
+            // Debug.DrawRay(transform.position, rayDirection * rayLength, orange);
             // Perform the raycast
             if (Physics.Raycast(transform.position, rayDirection, out hit, rayLength))
             {
