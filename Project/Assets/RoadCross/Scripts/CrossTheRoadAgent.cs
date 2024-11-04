@@ -4,6 +4,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CrossTheRoadAgent : Agent
 {
@@ -30,6 +31,9 @@ public class CrossTheRoadAgent : Agent
 
     [SerializeField]
     private Animator agentAnimator; // Reference to the Animator component for controlling animations
+
+    [SerializeField]
+    private List<Animator> pedestrianAnimators; // List of Animator components for pedestrians
 
     private CrossTheRoadGoal goal = null;
 
@@ -84,6 +88,13 @@ public class CrossTheRoadAgent : Agent
         // Reset the animation state
         agentAnimator.SetFloat("ver", 0f);
         agentAnimator.SetFloat("hor", 0f);
+
+        // Reset pedestrian animations
+        foreach (Animator pedestrianAnimator in pedestrianAnimators)
+        {
+            pedestrianAnimator.SetFloat("ver", 0f);
+            pedestrianAnimator.SetFloat("hor", 0f);
+        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -107,6 +118,13 @@ public class CrossTheRoadAgent : Agent
             moveInProgress = false;
             agentAnimator.SetFloat("ver", 0f);
             agentAnimator.SetFloat("hor", 0f); // Stop the movement in animation
+
+            // Stop pedestrian animations when the agent reaches its target
+            foreach (Animator pedestrianAnimator in pedestrianAnimators)
+            {
+                pedestrianAnimator.SetFloat("ver", 0f);
+                pedestrianAnimator.SetFloat("hor", 0f);
+            }
         }
     }
 
@@ -127,14 +145,13 @@ public class CrossTheRoadAgent : Agent
             {
                 case 0: // idle
                     moveTo = transform.localPosition;
-                    // moveToDirection = MoveToDirection.Idle;
                     agentAnimator.SetFloat("ver", 0f); // Idle animation
                     break;
                 case 3: // forward
                     moveTo = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + stepAmount);
-                    // moveToDirection = MoveToDirection.Forward;
                     moveInProgress = true;
                     agentAnimator.SetFloat("ver", 1f); // Forward movement animation
+                    AnimatePedestrians(); // Trigger pedestrian animation
                     break;
             }
         }
@@ -153,20 +170,32 @@ public class CrossTheRoadAgent : Agent
                     moveToDirection = MoveToDirection.Left;
                     moveInProgress = true;
                     agentAnimator.SetFloat("hor", -1f); // Left movement animation
+                    AnimatePedestrians(); // Trigger pedestrian animation
                     break;
                 case 2: // right
                     moveTo = new Vector3(transform.localPosition.x + stepAmount, transform.localPosition.y, transform.localPosition.z);
                     moveToDirection = MoveToDirection.Right;
                     moveInProgress = true;
                     agentAnimator.SetFloat("hor", 1f); // Right movement animation
+                    AnimatePedestrians(); // Trigger pedestrian animation
                     break;
                 case 3: // forward
                     moveTo = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + stepAmount);
                     moveToDirection = MoveToDirection.Forward;
                     moveInProgress = true;
                     agentAnimator.SetFloat("ver", 1f); // Forward movement animation
+                    AnimatePedestrians(); // Trigger pedestrian animation
                     break;
             }
+        }
+    }
+
+    private void AnimatePedestrians()
+    {
+        // Trigger movement animations for each pedestrian in the list
+        foreach (Animator pedestrianAnimator in pedestrianAnimators)
+        {
+            pedestrianAnimator.SetFloat("ver", 1f); // Adjust or add more animations as needed
         }
     }
 
